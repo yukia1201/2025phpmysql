@@ -13,6 +13,19 @@
     <p>今天的日期是: <?= Date("Y/m/d") ?></p>
     <hr>
 
+    <form action="myact.php">
+    姓名:
+    <input type="text" name="name">
+    年紀:
+    <input type="text" name="age">
+    身高:
+    <input type="text" name="height">
+    體重:
+    <input type="text" name="weight">
+    <br>
+    <input type="submit" value="送出">
+    </form>
+
     <p>我的身高是: <?= $h=157 ?></p>
     <p>我的體重是: <?= $w=45 ?></p>
     <p>我的BMI是: <?= $w/($h/100*$h/100) ?></p>

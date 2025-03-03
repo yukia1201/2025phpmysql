@@ -7,13 +7,7 @@
 </head>
 <body>
     <H1>Home Sweet Home</H1>
-    <hr>
-    <p>計算結果: <?= 333*555 ?></p>
-    
-    <p>今天的日期是: <?= Date("Y/m/d") ?></p>
-    <hr>
-
-    <form action="myact.php">
+    <form action="">
     姓名:
     <input type="text" name="name">
     年紀:
@@ -23,17 +17,30 @@
     體重:
     <input type="text" name="weight">
     <br>
-    <input type="submit" value="送出">
+    <input type="submit" value="送出" name="submit">
     </form>
 
-    <p>我的身高是: <?= $h=157 ?></p>
-    <p>我的體重是: <?= $w=45 ?></p>
-    <p>我的BMI是: <?= $w/($h/100*$h/100) ?></p>
     <hr>
+
+    <?php if(isset($_GET["submit"])) {?>
+
+    <h1>資料收到</h1>
     <p>我的名字是: <?= $_GET["name"] ?></p>
     <p>我的年紀是: <?= $_GET["age"] ?></p>
     <p>我的身高是: <?= $_GET["height"] ?></p>
     <p>我的體重是: <?= $_GET["weight"] ?></p>
-    <hr>
+    <p>你的BMI值:  <?= $bmi = $w/($h/100*$h/100) ?></p>
+    
+    <?php
+     if ($bmi>25) {
+        echo "你好胖";
+    } elseif ($bmi<18){
+        echo "你太瘦";
+    } else {
+        echo "身材適中，繼續保持!";
+    }
+    ?>
+    <?php } ?>
+    
 </body>
 </html>

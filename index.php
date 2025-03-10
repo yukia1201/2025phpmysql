@@ -75,7 +75,34 @@
     </fieldset>
     <fieldset>  
         <legend>資料上傳</legend>
+        <p>
+            <label for="">同意書</label>
+            <input type="file" name="agreement" id="agreement" accept=".pdf,.doc,.docx">
+        </p>
+
+        <p>
+            <label for="">個人照片</label>
+            <input type="file" name="image" id="image" accept="image/*" onchange="preview_image(event)">
+            <div><img src="output_image" width="300"></div>
+            <div>
+    <img id="output_image" />
+</div>
+        </p>
     </fieldset>
-    <p><input type="submit" value="送出"></p>
+
+    <input type="submit" value="送出">
+
+</form>
+<script type='text/javascript'>
+function preview_image(event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var output = document.getElementById('output_image');
+        output.src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+    
 </body>
 </html>

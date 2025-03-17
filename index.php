@@ -74,6 +74,34 @@
             <label for="place5">非常不滿意</label>
     </fieldset>
     <fieldset>  
+        <legend>滿意度</legend>
+        <label for="">設備</label>
+            <input type="radio" name="place" id="place1" value="5">
+            <label for="place1">非常滿意</label>
+            <input type="radio" name="place" id="place2" value="4">
+            <label for="place2">滿意</label>
+            <input type="radio" name="place" id="place3" value="3">
+            <label for="place3">普通</label>
+            <input type="radio" name="place" id="place4" value="2">
+            <label for="place4">不滿意</label>
+            <input type="radio" name="place" id="place5" value="1">
+            <label for="place5">非常不滿意</label>
+    </fieldset>
+    <fieldset>  
+        <legend>滿意度</legend>
+        <label for="">服務</label>
+            <input type="radio" name="place" id="place1" value="5">
+            <label for="place1">非常滿意</label>
+            <input type="radio" name="place" id="place2" value="4">
+            <label for="place2">滿意</label>
+            <input type="radio" name="place" id="place3" value="3">
+            <label for="place3">普通</label>
+            <input type="radio" name="place" id="place4" value="2">
+            <label for="place4">不滿意</label>
+            <input type="radio" name="place" id="place5" value="1">
+            <label for="place5">非常不滿意</label>
+    </fieldset>
+    <fieldset>  
         <legend>資料上傳</legend>
         <p>
             <label for="">同意書</label>

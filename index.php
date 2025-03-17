@@ -93,6 +93,49 @@
     <input type="submit" value="送出">
 
 </form>
+
+<script type='text/javascript'>
+function preview_image(event) {
+    var reader = new FileReader();
+    reader.onload = function () {
+        var output = document.getElementById('output_image');
+        output.src = reader.result;
+    }
+    reader.readAsDataURL(event.target.files[0]);
+}
+</script>
+
+<?php
+
+if (isset($_POST["submit"])) {
+
+    $name   = $_REQUEST["name"];
+    $gender = $_REQUEST["gender"];
+    $bday   = $_REQUEST["bday"];
+    $phone  = $_REQUEST["phone"];
+    $area   = $_REQUEST["area"];
+
+    echo "<p>資料收到</p>";
+
+    echo "<p>你的名字是:" . $name ."</p>";
+
+    if ($gender=="1") {
+        echo "<p>你是男生</p>";
+    } elseif ($gender=="2") {
+        echo "<p>你是女生</p>";
+    } else {
+        echo "<p>你是男生還是女生?</p>";
+    }
+
+    echo "<p>你的生日:" . $bday ."</p>";
+    echo "<p>你的電話:" . $phone ."</p>";
+    echo "<p>你居住區域:" . $area ."</p>";
+}
+
+?>
+
+
+
 <script type='text/javascript'>
 function preview_image(event) {
     var reader = new FileReader();

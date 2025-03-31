@@ -58,10 +58,12 @@ $result = $conn->query($sql);
                 echo "<td>" . $row["pubdate"] . "</td>";
                 echo "<td>" . $row["price"] . "</td>";
                 echo "<td>" . $row["content"] . "</td>";
-                echo "<td>
-                        <a href='edit_book.php?id=" . $row["id"] . "'>編輯</a> | 
-                        <a href='delete_book.php?id=" . $row["id"] . "' onclick='return confirm(\"確定要刪除嗎？\")'>刪除</a>
-                      </td>";
+               echo "<td>
+        <a href='view_book.php?id=" . $row["id"] . "'>查看</a> | 
+        <a href='edit_book.php?id=" . $row["id"] . "'>編輯</a> | 
+        <a href='delete_book.php?id=" . $row["id"] . "' onclick='return confirm(\"確定要刪除嗎？\")'>刪除</a>
+      </td>";
+
                 echo "</tr>";
             }
         } else {

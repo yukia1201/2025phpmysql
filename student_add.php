@@ -1,53 +1,79 @@
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $servername = "localhost";
-    $username = "root";
-    $password = "";
-    $dbname = "school";
-
-    $conn = new mysqli($servername, $username, $password, $dbname);
-    if ($conn->connect_error) {
-        die("連接失敗: " . $conn->connect_error);
-    }
-
-    $schid = $_POST["schid"];
-    $name = $_POST["name"];
-    $gender = $_POST["gender"];
-    $birthday = $_POST["birthday"];
-    $email = $_POST["email"];
-    $address = $_POST["address"];
-
-    $sql = "INSERT INTO student (schid, name, gender, birthday, email, address) VALUES ('$schid', '$name', '$gender', '$birthday', '$email', '$address')";
-
-    if ($conn->query($sql) === TRUE) {
-        header("Location: student_list.php");
-    } else {
-        echo "錯誤: " . $conn->error;
-    }
-    $conn->close();
-}
-?>
-
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新增學生</title>
-    <link rel="stylesheet" href="style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        .form-container {
+            background-color: white;
+            padding: 20px;
+            max-width: 500px;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+            color: #4CAF50;
+        }
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        button {
+            width: 100%;
+            padding: 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 <body>
-    <h2>新增學生</h2>
-    <form method="POST">
-        <label>學號：</label><input type="text" name="schid" required><br>
-        <label>姓名：</label><input type="text" name="name" required><br>
-        <label>性別：</label>
-        <select name="gender">
-            <option value="M">男</option>
-            <option value="F">女</option>
-        </select><br>
-        <label>生日：</label><input type="date" name="birthday" required><br>
-        <label>電子郵件：</label><input type="email" name="email" required><br>
-        <label>住址：</label><input type="text" name="address" required><br>
-        <button type="submit">提交</button>
-    </form>
+    <div class="form-container">
+        <h2>新增學生</h2>
+        <form method="POST" action="student_insert.php">
+            <label for="schid">學號：</label>
+            <input type="text" name="schid" required>
+
+            <label for="name">姓名：</label>
+            <input type="text" name="name" required>
+
+            <label for="gender">性別：</label>
+            <select name="gender" required>
+                <option value="M">男</option>
+                <option value="F">女</option>
+            </select>
+
+            <label for="birthday">生日：</label>
+            <input type="date" name="birthday" required>
+
+            <label for="email">電子郵件：</label>
+            <input type="email" name="email" required>
+
+            <label for="address">住址：</label>
+            <input type="text" name="address" required>
+
+            <button type="submit">新增學生</button>
+        </form>
+    </div>
 </body>
 </html>

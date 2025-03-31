@@ -6,52 +6,54 @@ $dbname = "school";
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
-    die("連接失敗: " . $conn->connect_error);
+    die("Connection failed: " . $conn->connect_error);
 }
 
-$id = $_GET["id"];
+$id = $_GET['id'];
 $sql = "SELECT * FROM student WHERE id = $id";
 $result = $conn->query($sql);
-$row = $result->fetch_assoc();
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $schid = $_POST["schid"];
-    $name = $_POST["name"];
-    $gender = $_POST["gender"];
-    $birthday = $_POST["birthday"];
-    $email = $_POST["email"];
-    $address = $_POST["address"];
-
-    $sql = "UPDATE student SET schid='$schid', name='$name', gender='$gender', birthday='$birthday', email='$email', address='$address' WHERE id=$id";
-    
-    if ($conn->query($sql) === TRUE) {
-        header("Location: student_list.php");
-    } else {
-        echo "錯誤: " . $conn->error;
-    }
-}
+$student = $result->fetch_assoc();
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="zh">
 <head>
-    <title>修改學生</title>
-    <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>編輯學生</title>
+    <style>
+        /* 美化表單 */
+    </style>
 </head>
 <body>
-    <h2>修改學生</h2>
-    <form method="POST">
-        <label>學號：</label><input type="text" name="schid" value="<?= $row['schid'] ?>" required><br>
-        <label>姓名：</label><input type="text" name="name" value="<?= $row['name'] ?>" required><br>
-        <label>性別：</label>
-        <select name="gender">
-            <option value="M" <?= ($row['gender'] == 'M') ? 'selected' : '' ?>>男</option>
-            <option value="F" <?= ($row['gender'] == 'F') ? 'selected' : '' ?>>女</option>
-        </select><br>
-        <label>生日：</label><input type="date" name="birthday" value="<?= $row['birthday'] ?>" required><br>
-        <label>電子郵件：</label><input type="email" name="email" value="<?= $row['email'] ?>" required><br>
-        <label>住址：</label><input type="text" name="address" value="<?= $row['address'] ?>" required><br>
-        <button type="submit">更新</button>
-    </form>
+    <div class="form-container">
+        <h2>編輯學生資料</h2>
+        <form method="POST" action="student_update.php">
+            <input type="hidden" name="id" value="<?php echo $student['id']; ?>">
+
+            <label for="schid">學號：</label>
+            <input type="text" name="schid" value="<?php echo $student['schid']; ?>" required>
+
+            <label for="name">姓名：</label>
+            <input type="text" name="name" value="<?php echo $student['name']; ?>" required>
+
+            <label for="gender">性別：</label>
+            <select name="gender" required>
+                <option value="M" <?php echo $student['gender'] == 'M' ? 'selected' : ''; ?>>男</option>
+                <option value="F" <?php echo $student['gender'] == 'F' ? 'selected' : ''; ?>>女</option>
+            </select>
+
+            <label for="birthday">生日：</label>
+            <input type="date" name="birthday" value="<?php echo $student['birthday']; ?>" required>
+
+            <label for="email">電子郵件：</label>
+            <input type="email" name="email" value="<?php echo $student['email']; ?>" required>
+
+            <label for="address">住址：</label>
+            <input type="text" name="address" value="<?php echo $student['address']; ?>" required>
+
+            <button type="submit">更新學生資料</button>
+        </form>
+    </div>
 </body>
 </html>

@@ -49,5 +49,26 @@ $result = $conn->query($sql);
         </tr>
         <?php endwhile; ?>
     </table>
+    <?php
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "school";
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("連接失敗: " . $conn->connect_error);
+}
+
+// 取得學生資料
+$sql = "SELECT * FROM student";
+$result = $conn->query($sql);
+
+// 檢查 SQL 查詢是否有錯誤
+if (!$result) {
+    die("錯誤: " . $conn->error);
+}
+?>
+
 </body>
 </html>

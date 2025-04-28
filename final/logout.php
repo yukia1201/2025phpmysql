@@ -9,6 +9,6 @@ $_SESSION = array();
 session_destroy();
 
 // Redirect to login page
-echo "使用者已登出，轉入登入頁面中...";
-header('Refresh: 2; URL = login.php');
+// echo "使用者已登出，轉入登入頁面中...";
+header('location: index.php');
 ?>

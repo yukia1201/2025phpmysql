@@ -1,51 +1,71 @@
 <?php
-include 'config.php';
+session_start();
 
-$id = $_GET['id'];
-$stmt = $pdo->prepare("SELECT * FROM product WHERE id = ?");
-$stmt->execute([$id]);
-$product = $stmt->fetch(PDO::FETCH_ASSOC);
+function loginOK() {
+    return (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"]===true));
+}
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $stmt = $pdo->prepare("UPDATE product SET pname=?, pspec=?, price=?, pdate=?, content=? WHERE id=?");
-    $stmt->execute([
-        $_POST['pname'],
-        $_POST['pspec'],
-        $_POST['price'],
-        $_POST['pdate'],
-        $_POST['content'],
-        $id
-    ]);
-    header("Location: index.php");
+if (!loginOK()) {
+    header("location: login.php");
     exit;
 }
+
+$conn = new mysqli("localhost", "root", "", "school");
+$id = (int)$_GET['id'];
+$result = $conn->query("SELECT * FROM product WHERE id = $id");
+$row = $result->fetch_assoc();
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $pname = $_POST['pname'];
+    $pspec = $_POST['pspec'];
+    $price = (int)$_POST['price'];
+    $pdate = $_POST['pdate'];
+    $content = $_POST['content'];
+
+    $stmt = $conn->prepare("UPDATE product SET pname = ?, pspec = ?, price = ?, pdate = ?, content = ? WHERE id = ?");
+    $stmt->bind_param("ssissi", $pname, $pspec, $price, $pdate, $content, $id);
+    $stmt->execute();
+    header("Location: index.php");
+}
+
+include 'header.php';
+
+// Get today's date in YYYY-MM-DD format for the date input
+$today = date('Y-m-d');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>編輯產品</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container py-4">
-    <h2>編輯產品</h2>
-    <form method="post">
-        <div class="mb-2">
-            <label>名稱</label><input type="text" name="pname" value="<?= $product['pname'] ?>" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>規格</label><input type="text" name="pspec" value="<?= $product['pspec'] ?>" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>價格</label><input type="number" name="price" value="<?= $product['price'] ?>" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>製作日期</label><input type="date" name="pdate" value="<?= $product['pdate'] ?>" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>內容說明</label><textarea name="content" class="form-control" rows="4"><?= $product['content'] ?></textarea>
-        </div>
-        <button class="btn btn-warning">儲存修改</button>
-        <a href="index.php" class="btn btn-secondary">取消</a>
-    </form>
-</body>
-</html>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">編輯產品資料</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label">產品名稱</label>
+                <input name="pname" class="form-control" value="<?= htmlspecialchars($row['pname']) ?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">產品規格</label>
+                <input name="pspec" class="form-control" value="<?= htmlspecialchars($row['pspec']) ?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">定價</label>
+                <input name="price" type="number" class="form-control" value="<?= $row['price'] ?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">製造日期</label>
+                <input name="pdate" type="date" class="form-control" value="<?= $row['pdate'] ?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">內容說明</label>
+                <textarea name="content" rows="5" class="form-control" required><?= htmlspecialchars($row['content']) ?></textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-success">儲存更改</button>
+                <a href="index.php" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?php include 'footer.php'; ?>

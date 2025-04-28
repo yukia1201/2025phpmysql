@@ -1,12 +1,9 @@
 <?php
-$host = 'localhost';
-$dbname = 'school';
-$username = 'root';
-$password = '';
-
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8mb4", $username, $password);
-} catch (PDOException $e) {
-    die("資料庫連線失敗：" . $e->getMessage());
-}
+# 資料庫設定
+$hostname = 'localhost';
+$database = 'school';
+$dbuser = 'root';
+$dbpass = '';
+# 首頁設定
+$main = 'index.php';
 ?>

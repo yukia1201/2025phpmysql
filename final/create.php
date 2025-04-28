@@ -1,44 +1,68 @@
-<?php include 'config.php';
+<?php
+session_start();
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $stmt = $pdo->prepare("INSERT INTO product (pname, pspec, price, pdate, content) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([
-        $_POST['pname'],
-        $_POST['pspec'],
-        $_POST['price'],
-        $_POST['pdate'],
-        $_POST['content']
-    ]);
-    header("Location: index.php");
+function loginOK() {
+    return (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"]===true));
+}
+
+if (!loginOK()) {
+    header("location: login.php");
     exit;
 }
+
+$conn = new mysqli("localhost", "root", "", "school");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $pname = $_POST['pname'];
+    $pspec = $_POST['pspec'];
+    $price = (int)$_POST['price'];
+    $pdate = $_POST['pdate'];
+    $content = $_POST['content'];
+
+    $stmt = $conn->prepare("INSERT INTO product (pname, pspec, price, pdate, content) VALUES (?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssiss", $pname, $pspec, $price, $pdate, $content);
+    $stmt->execute();
+    header("Location: index.php");
+}
+
+include 'header.php';
+
+// Get today's date in YYYY-MM-DD format
+$today = date('Y-m-d');
 ?>
-<!DOCTYPE html>
-<html>
-<head>
-    <title>新增產品</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body class="container py-4">
-    <h2>新增產品</h2>
-    <form method="post">
-        <div class="mb-2">
-            <label>名稱</label><input type="text" name="pname" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>規格</label><input type="text" name="pspec" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>價格</label><input type="number" name="price" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>製作日期</label><input type="date" name="pdate" class="form-control" required>
-        </div>
-        <div class="mb-2">
-            <label>內容說明</label><textarea name="content" class="form-control" rows="4" required></textarea>
-        </div>
-        <button class="btn btn-success">新增</button>
-        <a href="index.php" class="btn btn-secondary">取消</a>
-    </form>
-</body>
-</html>
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h3 class="mb-0">新增產品</h3>
+    </div>
+    <div class="card-body">
+        <form method="post">
+            <div class="mb-3">
+                <label class="form-label">產品名稱</label>
+                <input name="pname" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">產品規格</label>
+                <input name="pspec" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">定價</label>
+                <input name="price" type="number" class="form-control" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">製造日期</label>
+                <input name="pdate" type="date" class="form-control" value="<?= $today ?>" required>
+            </div>
+            <div class="mb-3">
+                <label class="form-label">內容說明</label>
+                <textarea name="content" rows="5" class="form-control" required></textarea>
+            </div>
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-primary">儲存</button>
+                <a href="index.php" class="btn btn-secondary">取消</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<?php include 'footer.php'; ?>

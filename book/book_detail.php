@@ -1,108 +1,85 @@
 <?php
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "school";
+$username = "root"; // 根據你的資料庫設定修改
+$password = ""; // 根據你的資料庫設定修改
+$dbname = "school"; // 修改為你的資料庫名稱
 
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 if ($conn->connect_error) {
-    die("連接失敗: " . $conn->connect_error);
+    die("連線失敗: " . $conn->connect_error);
 }
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
-    $sql = "SELECT * FROM books WHERE id = $id";
-    $result = $conn->query($sql);
+$conn->set_charset("utf8mb4");
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-    } else {
-        echo "找不到這本書！";
-        exit;
-    }
-} else {
-    echo "沒有提供 ID！";
-    exit;
-}
+$id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+
+$stmt = $conn->prepare("SELECT * FROM book WHERE id = ?");
+$stmt->bind_param("i", $id);
+$stmt->execute();
+$result = $stmt->get_result();
+$book = $result->fetch_assoc();
+
+$stmt->close();
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
-    <title>書籍詳情</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>書籍詳細資訊</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
+            margin: 20px;
             padding: 20px;
+            background-color: #f9f9f9;
         }
         .container {
+            max-width: 600px;
             background: white;
-            width: 400px;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin: auto;
         }
         h2 {
-            margin-bottom: 20px;
+            text-align: center;
         }
-        table {
-            width: 100%;
-        }
-        td {
+        .info {
+            margin-bottom: 15px;
             padding: 10px;
-            text-align: left;
+            border-bottom: 1px solid #ddd;
         }
-        .label {
+        .info label {
             font-weight: bold;
-            color: #333;
+            display: block;
         }
         .back-link {
             display: block;
-            margin-top: 15px;
+            text-align: center;
+            margin-top: 20px;
             color: #007bff;
             text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>書籍詳情</h2>
-    <table>
-        <tr>
-            <td class="label">書名：</td>
-            <td><?php echo htmlspecialchars($row['bookname']); ?></td>
-        </tr>
-        <tr>
-            <td class="label">作者：</td>
-            <td><?php echo htmlspecialchars($row['author']); ?></td>
-        </tr>
-        <tr>
-            <td class="label">出版社：</td>
-            <td><?php echo htmlspecialchars($row['publisher']); ?></td>
-        </tr>
-        <tr>
-            <td class="label">出版日期：</td>
-            <td><?php echo htmlspecialchars($row['pubdate']); ?></td>
-        </tr>
-        <tr>
-            <td class="label">定價：</td>
-            <td><?php echo htmlspecialchars($row['price']); ?> 元</td>
-        </tr>
-        <tr>
-            <td class="label">內容：</td>
-            <td><?php echo nl2br(htmlspecialchars($row['content'])); ?></td>
-        </tr>
-    </table>
-    <a class="back-link" href="index.php">返回書籍列表</a>
-</div>
-
+    <div class="container">
+        <h2>書籍詳細資訊</h2>
+        <?php if ($book): ?>
+            <div class="info"><label>書名:</label> <?php echo htmlspecialchars($book['bookname']); ?></div>
+            <div class="info"><label>作者:</label> <?php echo htmlspecialchars($book['author']); ?></div>
+            <div class="info"><label>出版社:</label> <?php echo htmlspecialchars($book['publisher']); ?></div>
+            <div class="info"><label>出版日期:</label> <?php echo $book['pubdate']; ?></div>
+            <div class="info"><label>定價:</label> <?php echo $book['price']; ?> 元</div>
+            <div class="info"><label>內容說明:</label> <?php echo nl2br(htmlspecialchars($book['content'])); ?></div>
+        <?php else: ?>
+            <p>找不到該書籍。</p>
+        <?php endif; ?>
+        <a class="back-link" href="book_list.php">返回書籍列表</a>
+    </div>
 </body>
 </html>

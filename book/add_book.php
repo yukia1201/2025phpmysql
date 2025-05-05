@@ -1,59 +1,91 @@
 <?php
+session_start();
+
+function loginOK() {
+    return (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"]===true));
+}
+
+if (!loginOK()) { 
+    header("location: login.php");
+}
+
+
 $servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "school";
+$username = "root"; // 根據你的資料庫設定修改
+$password = ""; // 根據你的資料庫設定修改
+$dbname = "school"; // 修改為你的資料庫名稱
 
 $conn = new mysqli($servername, $username, $password, $dbname);
+
 if ($conn->connect_error) {
-    die("連接失敗: " . $conn->connect_error);
+    die("連線失敗: " . $conn->connect_error);
 }
+
+$conn->set_charset("utf8mb4");
+
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $bookname = $_POST['bookname'];
+    $author = $_POST['author'];
+    $publisher = $_POST['publisher'];
+    $pubdate = $_POST['pubdate'];
+    $price = $_POST['price'];
+    $content = $_POST['content'];
+
+    $stmt = $conn->prepare("INSERT INTO book (bookname, author, publisher, pubdate, price, content) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("ssssis", $bookname, $author, $publisher, $pubdate, $price, $content);
+
+    if ($stmt->execute()) {
+        header("Location: book_list.php");
+        exit();
+    } else {
+        echo "新增失敗: " . $stmt->error;
+    }
+    $stmt->close();
+}
+
+$conn->close();
 ?>
 
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>新增書籍</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            text-align: center;
+            margin: 20px;
             padding: 20px;
+            background-color: #f9f9f9;
         }
         .container {
+            max-width: 500px;
             background: white;
-            width: 400px;
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
             margin: auto;
         }
-        h2 {
-            margin-bottom: 20px;
-        }
-        table {
-            width: 100%;
-        }
-        td {
-            padding: 10px;
-            text-align: left;
+        label {
+            font-weight: bold;
+            display: block;
+            margin-top: 10px;
         }
         input, textarea {
             width: 100%;
             padding: 8px;
+            margin-top: 5px;
             border: 1px solid #ccc;
             border-radius: 4px;
-            font-size: 14px;
         }
         button {
             background-color: #28a745;
             color: white;
-            border: none;
             padding: 10px;
-            font-size: 16px;
+            border: none;
             border-radius: 4px;
+            margin-top: 15px;
             cursor: pointer;
             width: 100%;
         }
@@ -62,50 +94,38 @@ if ($conn->connect_error) {
         }
         .back-link {
             display: block;
-            margin-top: 15px;
+            text-align: center;
+            margin-top: 10px;
             color: #007bff;
             text-decoration: none;
-        }
-        .back-link:hover {
-            text-decoration: underline;
         }
     </style>
 </head>
 <body>
-
-<div class="container">
-    <h2>新增書籍</h2>
-    <form method="POST" action="insert.php">
-        <table>
-            <tr>
-                <td><label>書名：</label></td>
-                <td><input type="text" name="bookname" required></td>
-            </tr>
-            <tr>
-                <td><label>作者：</label></td>
-                <td><input type="text" name="author" required></td>
-            </tr>
-            <tr>
-                <td><label>出版社：</label></td>
-                <td><input type="text" name="publisher" required></td>
-            </tr>
-            <tr>
-                <td><label>出版日期：</label></td>
-                <td><input type="date" name="pubdate" required></td>
-            </tr>
-            <tr>
-                <td><label>定價：</label></td>
-                <td><input type="number" name="price" required></td>
-            </tr>
-            <tr>
-                <td><label>內容：</label></td>
-                <td><textarea name="content" rows="4" required></textarea></td>
-            </tr>
-        </table>
-        <button type="submit">新增書籍</button>
-    </form>
-    <a class="back-link" href="index.php">返回書籍列表</a>
-</div>
-
+    <div class="container">
+        <h2>新增書籍</h2>
+        <form method="post">
+            <label>書名:</label>
+            <input type="text" name="bookname" required>
+            
+            <label>作者:</label>
+            <input type="text" name="author" required>
+            
+            <label>出版社:</label>
+            <input type="text" name="publisher" required>
+            
+            <label>出版日期:</label>
+            <input type="date" name="pubdate" required>
+            
+            <label>定價:</label>
+            <input type="number" name="price" required>
+            
+            <label>內容說明:</label>
+            <textarea name="content" rows="4" required></textarea>
+            
+            <button type="submit">新增</button>
+        </form>
+        <a class="back-link" href="book_list.php">返回書籍列表</a>
+    </div>
 </body>
 </html>

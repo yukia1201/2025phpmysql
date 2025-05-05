@@ -1,65 +1,145 @@
 <?php
+// Initialize the session
 session_start();
-require 'db.php';
 
-// 顯示 POST 資料，幫助除錯
-echo "<pre>";
-var_dump($_POST);  // 檢查 POST 資料
-echo "</pre>";
+// Include config file
+require_once "dbconfig.php";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = $_POST["username"] ?? '';
-    $password = $_POST["password"] ?? '';
+// Check if the user is already logged in, if yes then redirect him to welcome page
+if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
+    header("location: $main");
+    exit;
+}
 
-    // 查詢資料庫，檢查是否有該用戶
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
-    $stmt->execute([$username]);
-    $user = $stmt->fetch();
 
-    if ($user) {
-        // 顯示從資料庫中取得的用戶資料
-        echo "<pre>User found:</pre>";
-        var_dump($user);
+// Define variables and initialize with empty values
+$username = $userpass = "";
+$username_err = $userpass_err = $login_err = "";
 
-        // 密碼比對
-        if (password_verify($password, $user['userpass'])) {
-            // 密碼比對成功
-            $_SESSION['user'] = $user['username'];
+// Processing form data when form is submitted
+if($_SERVER["REQUEST_METHOD"] == "POST"){
 
-            // 跳轉到書籍頁面
-            header("Location: booklist.php");
-            exit; // 確保後續程式碼不再執行
-        } else {
-            // 密碼錯誤
-            $error = "登入失敗。帳號或密碼錯誤。";
-        }
-    } else {
-        // 找不到用戶
-        $error = "登入失敗。帳號或密碼錯誤。";
+    $conn = new PDO("mysql:host=$hostname;dbname=$database;charset=UTF8", $dbuser, $dbpass);
+    // 設定錯誤處理模式 set the PDO error mode to exception
+    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Check if username is empty
+    if(empty(trim($_POST["username"]))){
+        $username_err = "Please enter username.";
+    } else{
+        $username = trim($_POST["username"]);
     }
+
+    // Check if password is empty
+    if(empty(trim($_POST["userpass"]))){
+        $password_err = "Please enter your password.";
+    } else{
+        $password = trim($_POST["userpass"]);
+    }
+
+    // Validate credentials
+    if(empty($username_err) && empty($password_err)){
+
+        // Prepare a select statement
+        $sql = "SELECT id, username, userpass FROM users WHERE username = :username";
+
+        if($stmt = $conn->prepare($sql)){
+
+            // Bind variables to the prepared statement as parameters
+            $stmt->bindParam(":username", $param_username, PDO::PARAM_STR);
+
+            // Set parameters
+            $param_username = trim($_POST["username"]);
+
+            // Attempt to execute the prepared statement
+            if($stmt->execute()){
+
+                // Check if username exists, if yes then verify password
+                if($stmt->rowCount() == 1){
+
+                    if($row = $stmt->fetch()){
+                        $id = $row["id"];
+                        $username = $row["username"];
+                        $hashed_password = $row["userpass"];
+
+                        if(password_verify($password, $hashed_password)){
+
+                            // Password is correct, so start a new session
+                            session_start();
+
+                            // Store data in session variables
+                            $_SESSION["loggedin"] = true;
+                            $_SESSION["id"] = $id;
+                            $_SESSION["username"] = $username;
+
+                            // Redirect user to welcome page
+                            header("location: $main");
+
+                        } else{
+
+                            // Password is not valid, display a generic error message
+                            $login_err = "Invalid username or password.";
+                        }
+                    }
+                } else{
+
+                    // Username doesn't exist, display a generic error message
+                    $login_err = "Invalid username or password.";
+
+                }
+            } else{
+                echo "Oops! Something went wrong. Please try again later.";
+            }
+            // Close statement
+            unset($stmt);
+        }
+    }
+    // Close connection
+    unset($pdo);
 }
 ?>
-
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>登入</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Login / Sign On</title>
 </head>
-<body class="container mt-5">
-    <h2>登入</h2>
-    <?php if (isset($error)) echo "<div class='alert alert-danger'>$error</div>"; ?>
-    <form method="post">
-        <div class="mb-3">
-            <label>帳號：</label>
-            <input type="text" name="username" class="form-control" required>
-        </div>
-        <div class="mb-3">
-            <label>密碼：</label>
-            <input type="password" name="password" class="form-control" required>
-        </div>
-        <button type="submit" class="btn btn-primary">登入</button>
-        <a href="register.php" class="btn btn-warning">註冊</a>
-    </form>
+<body>
+    <div class="container">
+
+        <h2>Login</h2>
+        <p>Please fill in your credentials to login.</p>
+
+        <?php
+        if(!empty($login_err)){
+            echo '<div class="alert alert-danger">' . $login_err . '</div>';
+        }
+        ?>
+
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>" method="post">
+
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" name="username" id="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                <span class="invalid-feedback"><?php echo $username_err; ?></span>
+            </div>
+
+            <div class="form-group">
+                <label for="userpass">Password</label>
+                <input type="password" name="userpass" id="userpass" class="form-control <?php echo (!empty($password_err)) ? 'is-invalid' : ''; ?>">
+                <span class="invalid-feedback"><?php echo $password_err; ?></span>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" class="btn btn-primary" value="Login">
+            </div>
+
+            <p>Don't have an account? <a href="register.php">Sign up now</a>.</p>
+        </form>
+    </div>
 </body>
 </html>

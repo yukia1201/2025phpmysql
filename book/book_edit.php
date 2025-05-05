@@ -2,7 +2,7 @@
 session_start();
 
 function loginOK() {
-    return (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"]===true));
+    return (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"] === true));
 }
 
 if (!loginOK()) { 
@@ -61,42 +61,41 @@ $conn->close();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>修改書籍</title>
+    <!-- Include Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
+            background-color: #f4f7fc;
         }
         .container {
-            max-width: 500px;
+            max-width: 600px;
             background: white;
-            padding: 20px;
+            padding: 30px;
             border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin: auto;
+            box-shadow: 0px 0px 15px rgba(0, 0, 0, 0.1);
+            margin-top: 50px;
         }
         label {
             font-weight: bold;
-            display: block;
-            margin-top: 10px;
+            margin-top: 15px;
         }
         input, textarea {
             width: 100%;
-            padding: 8px;
+            padding: 10px;
             margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
         }
         button {
             background-color: #007bff;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 4px;
+            border-radius: 5px;
+            width: 100%;
             margin-top: 15px;
             cursor: pointer;
-            width: 100%;
         }
         button:hover {
             background-color: #0056b3;
@@ -104,15 +103,18 @@ $conn->close();
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 20px;
             color: #007bff;
             text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>修改書籍</h2>
+        <h2 class="text-center">修改書籍</h2>
         <?php if ($book): ?>
             <form method="post">
                 <input type="hidden" name="id" value="<?php echo $book['id']; ?>">
@@ -142,5 +144,8 @@ $conn->close();
         <?php endif; ?>
         <a class="back-link" href="book_list.php">返回書籍列表</a>
     </div>
+
+    <!-- Include Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

@@ -60,7 +60,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     } else{
         $usercnfm = trim($_POST["usercnfm"]);
         if(empty($userpass_err) && ($userpass != $usercnfm)){
-            $usercnfm_err = "Password did not match. $userpass $usercnfm";
+            $usercnfm_err = "Password did not match.";
         }
     }
 
@@ -100,43 +100,58 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CSS only -->
+    <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <title>Register / Sign Up</title>
+    <title>Sign Up</title>
+    <style>
+        body {
+            background-color: #f4f6f9;
+            padding-top: 50px;
+        }
+        .form-container {
+            max-width: 600px;
+            margin: auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
 </head>
 <body>
     <div class="container">
+        <div class="form-container">
+            <h2 class="text-center">Sign Up</h2>
+            <p class="text-center">Please fill this form to create an account.</p>
 
-        <h2>Sign Up</h2>
-        <p>Please fill this form to create an account.</p>
+            <form action="" method="post">
 
-        <form action="" method="post">
+                <div class="form-group mb-3">
+                    <label for="username">Username</label>
+                    <input type="text" name="username" id="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
+                    <span class="invalid-feedback"><?php echo $username_err; ?></span>
+                </div>
 
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" name="username" id="username" class="form-control <?php echo (!empty($username_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $username; ?>">
-                <span class="invalid-feedback"><?php echo $username_err; ?></span>
-            </div>
+                <div class="form-group mb-3">
+                    <label for="userpass">Password</label>
+                    <input type="password" name="userpass" id="userpass" class="form-control <?php echo (!empty($userpass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $userpass; ?>">
+                    <span class="invalid-feedback"><?php echo $userpass_err; ?></span>
+                </div>
 
-            <div class="form-group">
-                <label for="userpass">Password</label>
-                <input type="password" name="userpass" id="userpass" class="form-control <?php echo (!empty($userpass_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $userpass; ?>">
-                <span class="invalid-feedback"><?php echo $userpass_err; ?></span>
-            </div>
+                <div class="form-group mb-3">
+                    <label for="usercnfm">Confirm Password</label>
+                    <input type="password" name="usercnfm" id="usercnfm" class="form-control <?php echo (!empty($usercnfm_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $usercnfm; ?>">
+                    <span class="invalid-feedback"><?php echo $usercnfm_err; ?></span>
+                </div>
 
-            <div class="form-group">
-                <label for="usercnfm">Confirm Password</label>
-                <input type="password" name="usercnfm" id="usercnfm" class="form-control <?php echo (!empty($usercnfm_err)) ? 'is-invalid' : ''; ?>" value="<?php echo $usercnfm; ?>">
-                <span class="invalid-feedback"><?php echo $usercnfm_err; ?></span>
-            </div>
+                <div class="form-group text-center">
+                    <input type="submit" class="btn btn-primary" value="Submit">
+                    <input type="reset" class="btn btn-secondary ml-2" value="Reset">
+                </div>
 
-            <div class="form-group">
-                <input type="submit" class="btn btn-primary" value="Submit">
-                <input type="reset" class="btn btn-secondary ml-2" value="Reset">
-            </div>
-
-            <p>Already have an account? <a href="login.php">Login here</a>.</p>
-        </form>
+                <p class="text-center">Already have an account? <a href="login.php">Login here</a>.</p>
+            </form>
+        </div>
     </div>
 </body>
 </html>

@@ -9,7 +9,6 @@ if (!loginOK()) {
     header("location: login.php");
 }
 
-
 $servername = "localhost";
 $username = "root"; // 根據你的資料庫設定修改
 $password = ""; // 根據你的資料庫設定修改
@@ -54,40 +53,56 @@ $conn->close();
     <title>新增書籍</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-            padding: 20px;
-            background-color: #f9f9f9;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+            color: #333;
         }
         .container {
-            max-width: 500px;
-            background: white;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
-            margin: auto;
+            max-width: 600px;
+            margin: 50px auto;
+            background-color: #ffffff;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            border-top: 5px solid #28a745;
+        }
+        h2 {
+            text-align: center;
+            color: #333;
+            font-size: 1.8rem;
+            margin-bottom: 25px;
         }
         label {
             font-weight: bold;
             display: block;
-            margin-top: 10px;
+            margin-top: 12px;
+            color: #555;
         }
         input, textarea {
             width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px;
+            margin-top: 8px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            background-color: #f9f9f9;
+            box-sizing: border-box;
+        }
+        input[type="number"], input[type="date"] {
+            background-color: #fff;
         }
         button {
             background-color: #28a745;
             color: white;
-            padding: 10px;
+            padding: 12px;
             border: none;
-            border-radius: 4px;
-            margin-top: 15px;
-            cursor: pointer;
+            border-radius: 6px;
+            margin-top: 20px;
             width: 100%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
         }
         button:hover {
             background-color: #218838;
@@ -95,9 +110,13 @@ $conn->close();
         .back-link {
             display: block;
             text-align: center;
-            margin-top: 10px;
+            margin-top: 15px;
             color: #007bff;
+            font-size: 1rem;
             text-decoration: none;
+        }
+        .back-link:hover {
+            text-decoration: underline;
         }
     </style>
 </head>

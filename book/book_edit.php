@@ -1,6 +1,10 @@
 <?php
 session_start();
 
+function loginOK() {
+    return (isset($_SESSION["loggedin"]) && ($_SESSION["loggedin"]===true));
+}
+
 if (!loginOK()) { 
     header("location: login.php");
 }

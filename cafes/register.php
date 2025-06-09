@@ -82,7 +82,7 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
             // Attempt to execute the prepared statement
             if($stmt->execute()){
                 // Redirect to login page
-                header("location: cafes.php");
+                header("location: cafes_list.php");
             } else{
                 echo "Oops! Something went wrong. Please try again later.";
             }

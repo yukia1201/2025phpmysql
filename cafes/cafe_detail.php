@@ -85,7 +85,7 @@ $conn->close();
         <?php if ($cafe): ?>
             <div class="info">
                 <label>咖啡店名稱:</label>
-                <p><?php echo htmlspecialchars($cafe['cafename']); ?></p>
+                <p><?php echo htmlspecialchars($cafe['name']); ?></p>
             </div>
             <div class="info">
                 <label>地址:</label>
@@ -97,7 +97,7 @@ $conn->close();
             </div>
             <div class="info">
                 <label>營業時間:</label>
-                <p><?php echo htmlspecialchars($cafe['opentime']); ?></p>
+                <p><?php echo htmlspecialchars($cafe['business_hours']); ?></p>
             </div>
             <div class="info">
                 <label>簡介說明:</label>

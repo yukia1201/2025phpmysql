@@ -31,7 +31,7 @@ if (isset($_GET['delete'])) {
         $stmt->execute();
         $stmt->close();
     }
-    header("Location: cafes.php");
+    header("Location: cafes_list.php");
     exit();
 }
 

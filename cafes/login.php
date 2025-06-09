@@ -6,7 +6,7 @@ session_start();
 require_once "dbconfig.php";
 
 // 定義登入成功後要跳轉的頁面（記得改成你實際頁面）
-$main = "welcome.php"; 
+$main = "cafes_list.php"; 
 
 // Check if the user is already logged in, if yes then redirect him to welcome page
 if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){

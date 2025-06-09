@@ -22,14 +22,21 @@ if ($conn->connect_error) {
 $conn->set_charset("utf8mb4");
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $cafename = $_POST['cafename'];
+    $name = $_POST['name'];
     $address = $_POST['address'];
     $phone = $_POST['phone'];
-    $opentime = $_POST['opentime'];
+    $business_hours = $_POST['business_hours'];
     $description = $_POST['description'];
 
-    $stmt = $conn->prepare("INSERT INTO cafes (cafename, address, phone, opentime, description) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $cafename, $address, $phone, $opentime, $description);
+    $sql = "INSERT INTO cafes (name, address, phone, business_hours, description) VALUES (?, ?, ?, ?, ?)";
+    $stmt = $conn->prepare($sql);
+
+    if (!$stmt) {
+        echo "SQL 錯誤：" . $conn->error;
+        exit;
+    }
+
+    $stmt->bind_param("sssss", $name, $address, $phone, $business_hours, $description);
 
     if ($stmt->execute()) {
         header("Location: cafes_list.php");
@@ -120,7 +127,7 @@ $conn->close();
         <h2>新增咖啡店</h2>
         <form method="post">
             <label>咖啡店名稱:</label>
-            <input type="text" name="cafename" required />
+            <input type="text" name="name" required />
 
             <label>地址:</label>
             <input type="text" name="address" required />
@@ -129,7 +136,7 @@ $conn->close();
             <input type="text" name="phone" required />
 
             <label>營業時間:</label>
-            <input type="text" name="opentime" required />
+            <input type="text" name="business_hours" required />
 
             <label>簡介說明:</label>
             <textarea name="description" rows="4" required></textarea>
